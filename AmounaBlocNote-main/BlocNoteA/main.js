@@ -104,10 +104,9 @@ app.delete('/api/notes/:id', (req, res) => {
   });
 });
 
-// Démarrage serveur
-if (process.env.NODE_ENV !== 'test') {
-  app.listen(port, () => console.log(`Server running on port ${port}`));
-}
-
+// Start server
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
 // Exporter app pour les tests
 module.exports = app;
