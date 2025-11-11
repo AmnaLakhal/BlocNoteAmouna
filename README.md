@@ -48,5 +48,5 @@ L’application permet de **créer, afficher, modifier et supprimer des notes** 
 
 ### 1️⃣ Cloner le projet
 ```bash
-git clone https://github.com/votre-nom/AmounaBlocNote.git
+git clone https://github.com/AmnaLakhal/AmounaBlocNote.git
 cd AmounaBlocNote
