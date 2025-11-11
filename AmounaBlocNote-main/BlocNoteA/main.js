@@ -36,10 +36,11 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJsdoc(swaggerOption
 
 // MySQL Connection
 const db = mysql.createConnection({
-  host: "5qiela.h.filess.io", 
-  password: "86faa9260b5d16a6d64556d5e43bbea8cfc666b7", 
-  database: "BlocNoteAmouna12_verticalam", 
-port: 3307 //
+  host: "5qiela.h.filess.io", // 
+  user: "BlocNoteAmouna12_verticalam", // 
+  password: "86faa9260b5d16a6d64556d5e43bbea8cfc666b7", //
+  database: "BlocNoteAmouna12_verticalam", // 
+port: 3307 // 
 });
 db.connect(err => {
   if (err) throw err;
