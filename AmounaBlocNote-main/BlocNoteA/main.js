@@ -110,5 +110,5 @@ if (require.main === module) {
     app.listen(port, () => {
         console.log(`Server running on port ${port}`);
     });
-}// 🔑 تصدير كائن التطبيق (app) لكي تتمكن Vercel من استخدامه
+  }
 module.exports = app;
