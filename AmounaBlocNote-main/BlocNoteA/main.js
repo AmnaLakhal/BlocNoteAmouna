@@ -105,8 +105,10 @@ app.delete('/api/notes/:id', (req, res) => {
 });
 
 // Start server
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
-// Exporter app pour les tests
+
+if (require.main === module) {
+    app.listen(port, () => {
+        console.log(`Server running on port ${port}`);
+    });
+}// 🔑 تصدير كائن التطبيق (app) لكي تتمكن Vercel من استخدامه
 module.exports = app;
