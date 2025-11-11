@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>BlocNote Pro - Professional Note Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Styling: Professional Design */
+        :root {
+            --primary-color: #4A6BDF;
+            --secondary-color: #F5F7FF;
+            --accent-color: #FF6B6B;
+            --success-color: #4CAF50;
+            --warning-color: #FFC107;
+            --danger-color: #F44336;
+            --edit-color: #2196F3;
+            --text-primary: #2D3748;
+            --text-secondary: #718096;
+            --text-light: #A0AEC0;
+            --main-bg: #FFFFFF;
+            --sidebar-bg: #F8FAFC;
+            --border-color: #E2E8F0;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        body {
+            font-family: 'Inter', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #F6F8FB 0%, #E9EEF4 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        
+        .main-wrapper {
+            width: 100%;
+            max-width: 1400px;
+            display: flex;
+            gap: 0;
+            min-height: 100vh;
+            margin: 0 auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* --- Sidebar / New Note Form --- */
+        .new-note-panel {
+            flex: 0 0 320px;
+            background-color: var(--sidebar-bg);
+            padding: 30px;
+            border-right: 1px solid var(--border-color);
+            height: 100vh;
+            overflow-y: auto;
+            position: sticky;
+            top: 0;
+            transition: var(--transition);
+        }
+        .new-note-panel:hover {
+            background-color: var(--main-bg);
+        }
+        
+        h1 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        h1 i {
+            font-size: 24px;
+        }
+        .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-bottom: 22px;
+        }
+        
+        h2 {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+        
+        h2 i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            font-size: 18px;
+        }
+
+        /* Input and Button Styling */
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 15px;
+            font-family: inherit;
+            resize: vertical;
+            transition: var(--transition);
+            background-color: var(--main-bg);
+        }
+        input[type="text"]:focus, textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 107, 223, 0.1);
+            outline: none;
+        }
+        
+        /* Search Input Design */
+        .search-container {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 16px;
+            pointer-events: none;
+        }
+        
+        #search-input {
+            width: 100%;
+            padding: 14px 14px 14px 45px;
+            margin-bottom: 0;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background-color: var(--main-bg);
+            font-size: 15px;
+            transition: var(--transition);
+        }
+
+        .action-button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .action-button:hover {
+            background-color: #3A5BD9;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* --- Notes List Area --- */
+        .notes-area {
+            flex-grow: 1;
+            padding: 30px;
+            background-color: var(--main-bg);
+            overflow-y: auto;
+        }
+        
+        /* Grid Layout for Notes */
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        /* Note Card Design (Professional Look) */
+        .note-card {
+            background-color: var(--main-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            box-sizing: border-box;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+        }
+        .note-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-color);
+        }
+        
+        .note-card h3 {
+            color: #333;
+            font-size: 1.1em;
+            font-weight: 700;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.1); 
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+            margin-top: 0;
+        }
+        .note-card p {
+            color: var(--text-color);
+            line-height: 1.5;
+            margin-bottom: 10px;
+            max-height: 80px; 
+            overflow: hidden; 
+        }
+
+        .note-info {
+            font-size: 0.8em;
+            color: #777;
+            padding-top: 5px;
+        }
+        
+        .note-info i {
+            margin-right: 5px;
+            color: #777; 
+        }
+
+        .note-actions {
+            display: flex;
+            justify-content: flex-end; 
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .note-actions button {
+            cursor: pointer;
+            padding: 0;
+            border: none;
+            border-radius: 50%; /* Circular buttons */
+            width: 35px;
+            height: 35px;
+            font-size: 14px;
+            color: white;
+            opacity: 0.9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s; 
+        }
+        .note-actions button:hover {
+            opacity: 1;
+            transform: scale(1.1); 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+        }
+        
+        .edit-btn {
+            background-color: var(--edit-color);
+        }
+        
+        .delete-btn {
+            background-color: var(--danger-color);
+        }
+        
+        /* Loading Message Style */
+        #loading-message {
+            text-align: center;
+            grid-column: 1 / -1; 
+            color: var(--text-color);
+            font-size: 1.1em;
+            padding: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* --- Mobile Menu Button --- */
+        .menu-toggle {
+            display: none; 
+            position: fixed; /* to keep it visible on mobile */
+            top: 25px;
+            left: 20px;
+            background: #FFB6C1;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 20; 
+        }
+
+
+        /* Responsive adjustments (Mobile Drawer Logic) */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 80px; 
+                padding-left: 0;
+                padding-right: 0;
+            }
+            .main-wrapper {
+                flex-direction: column;
+                gap: 20px;
+                padding: 0 15px;
+            }
+            
+            /* Hide the form as a drawer on mobile */
+            .new-note-panel {
+                position: fixed; 
+                top: 0;
+                left: 0;
+                height: 100vh;
+                width: 300px;
+                max-width: 80%;
+                padding: 30px;
+                transform: translateX(-100%); /* Hidden by default */
+                transition: transform 0.3s ease-in-out;
+                z-index: 10;
+                box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
+            }
+            
+            .new-note-panel.active {
+                transform: translateX(0); /* Show when active */
+            }
+
+            .notes-grid {
+                /* Single column on mobile */
+                grid-template-columns: 1fr;
+            }
+            
+            .menu-toggle {
+                display: block; /* Show the menu button */
+            }
+            
+            /* To make sure note area is visible when panel is hidden */
+            .notes-area {
+                width: 100%;
+                padding-top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="menu-toggle" id="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <div class="main-wrapper">
+        <div class="new-note-panel" id="new-note-panel">
+            <h1><i class="fas fa-sticky-note"></i> BlocNote Pro</h1>
+            <div class="subtitle">Professional note manager — cute, cozy & easy</div>
+
+            <h2><i class="fas fa-pencil-alt"></i> Add / Edit Note</h2>
+            <input type="text" id="note-title" placeholder="Enter a title for your note (required)">
+            <textarea id="note-content" placeholder="Write your note content here... (required)" rows="5"></textarea>
+            <input type="hidden" id="note-id"> 
+
+            <button class="action-button" onclick="saveNote()">
+                <i class="fas fa-floppy-disk"></i> <span id="save-button-text">Save Note</span>
+            </button>
+        </div>
+
+        <div class="notes-area">
+            <h2><i class="fas fa-clipboard-list"></i> Your Notes List</h2>
+            
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="search-input" placeholder="Search your cozy notes..." onkeyup="filterNotes()">
+            </div>
+            
+            <div id="notes-container" class="notes-grid">
+                <p id="loading-message">Loading your cozy notes...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api/notes';
+        const notesContainer = document.getElementById('notes-container');
+        const loadingMessage = document.getElementById('loading-message');
+        
+        // Define the color palette for the note cards
+        const COLORS = [
+            '#FFC0CB',  /* Pink Pastel */
+            '#FFF8C9',  /* Yellow Pastel */
+            '#C9F0C9',  /* Green Pastel */
+            '#AEE2FF',  /* Blue Pastel */
+            '#FFD1A6',  /* Peach */
+            '#D9B3FF'   /* Lavender */
+        ];
+
+        function getRandomColor() {
+            return COLORS[Math.floor(Math.random() * COLORS.length)];
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            str = String(str); 
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+        }
+        
+        function formatDate(timestamp) {
+            if (!timestamp) return 'Date N/A';
+            // Format to show only the date (e.g., Oct 17)
+            return new Date(timestamp).toLocaleString('en-US', { 
+                month: 'short', day: 'numeric'
+            });
+        }
+
+        async function fetchNotes() {
+            loadingMessage.style.display = 'block';
+            notesContainer.innerHTML = ''; 
+
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('Failed to fetch notes from API.');
+                const notes = await response.json();
+                
+                loadingMessage.style.display = 'none';
+
+                if (!Array.isArray(notes) || notes.length === 0) {
+                    notesContainer.innerHTML = '<p id="loading-message">It\'s quiet here! Add your first cozy note.</p>';
+                    return;
+                }
+
+                notes.forEach(note => {
+                    const noteElement = document.createElement('div');
+                    noteElement.classList.add('note-card');
+                    
+                    // Set random background color
+                    noteElement.style.backgroundColor = getRandomColor();
+
+                    const safeTitle = escapeHtml(note.title);
+                    const safeContent = escapeHtml(note.content);
+
+                    // Escape quotes for use inside JS function call in HTML
+                    const titleForJS = safeTitle.replace(/'/g, "\\'");
+                    const contentForJS = safeContent.replace(/'/g, "\\'");
+                    
+                    const formattedDate = formatDate(note.created_at);
+
+                    noteElement.innerHTML = `
+                        <div class="note-content-wrapper">
+                            <h3>${safeTitle}</h3>
+                            <p>${safeContent}</p>
+                        </div>
+                        <div class="note-actions">
+                            <div class="note-info">
+                                <i class="far fa-calendar-alt"></i> ${formattedDate}
+                            </div>
+                            <button class="edit-btn" title="Edit" onclick="editNote(${note.id}, '${titleForJS}', '${contentForJS}')">
+                                <i class="fas fa-pencil-alt"></i> 
+                            </button>
+                            <button class="delete-btn" title="Delete" onclick="deleteNote(${note.id})">
+                                <i class="fas fa-trash"></i> 
+                            </button>
+                        </div>
+                    `;
+                    notesContainer.appendChild(noteElement);
+                });
+
+            } catch (error) {
+                console.error("Error fetching notes:", error);
+                loadingMessage.innerText = 'Error: Cannot connect to server. Check your server console.';
+                loadingMessage.style.color = '#FF6961';
+                loadingMessage.style.display = 'block';
+            }
+        }
+        
+        function filterNotes() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const noteCards = document.querySelectorAll('.note-card');
+
+            noteCards.forEach(card => {
+                const title = card.querySelector('h3').innerText.toLowerCase();
+                const content = card.querySelector('p').innerText.toLowerCase();
+                
+                if (title.includes(query) || content.includes(query)) {
+                    card.style.display = 'flex'; 
+                } else {
+                    card.style.display = 'none'; 
+                }
+            });
+        }
+        
+        function editNote(id, title, content) {
+            document.getElementById('note-id').value = id;
+            document.getElementById('note-title').value = title;
+            document.getElementById('note-content').value = content;
+            document.getElementById('save-button-text').innerText = 'Update Note'; 
+            
+            // On desktop, scroll to view the form. On mobile, open the drawer.
+            if (window.innerWidth <= 768) {
+                toggleMenu(true); 
+            } else {
+                document.querySelector('.new-note-panel').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        async function saveNote() {
+            const id = document.getElementById('note-id').value;
+            const title = document.getElementById('note-title').value.trim();
+            const content = document.getElementById('note-content').value.trim();
+
+            if (!title || !content) {
+                alert('Title and content are required to save a note.');
+                return;
+            }
+
+            const method = id ? 'PUT' : 'POST'; 
+            const url = id ? `${API_URL}/${id}` : API_URL; 
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, content })
+                });
+
+                if (response.ok) {
+                    // Reset fields
+                    document.getElementById('note-id').value = '';
+                    document.getElementById('note-title').value = '';
+                    document.getElementById('note-content').value = '';
+                    document.getElementById('save-button-text').innerText = 'Save Note';
+                    
+                    // Close the menu on mobile after saving
+                    if (window.innerWidth <= 768) {
+                        toggleMenu(false); 
+                    }
+                    
+                    fetchNotes(); 
+                } else {
+                    alert(`Failed to ${id ? 'update' : 'create'} the note. Try again.`);
+                }
+            } catch (error) {
+                console.error("Error saving note:", error);
+                alert('A server connection error occurred. Please try again later.');
+            }
+        }
+
+        async function deleteNote(id) {
+            if (!confirm('Are you sure you want to delete this note?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    fetchNotes(); 
+                } else {
+                    alert('Failed to delete the note. Try again.');
+                }
+            } catch (error) {
+                console.error("Error deleting note:", error);
+                alert('A server connection error occurred. Please try again later.');
+            }
+        }
+
+        // Drawer Menu Toggle Function
+        function toggleMenu(forceOpen = null) {
+            const panel = document.getElementById('new-note-panel');
+            const button = document.getElementById('menu-toggle');
+            
+            const isOpen = panel.classList.contains('active');
+            let shouldOpen;
+
+            if (forceOpen !== null) {
+                shouldOpen = forceOpen;
+            } else {
+                shouldOpen = !isOpen;
+            }
+
+            if (shouldOpen) {
+                panel.classList.add('active');
+                button.innerHTML = '<i class="fas fa-times"></i>'; // Change to close icon
+            } else {
+                panel.classList.remove('active');
+                button.innerHTML = '<i class="fas fa-bars"></i>'; // Change to menu icon
+            }
+        }
+
+        window.onload = fetchNotes;
+    </script>
+
+</body>
+</html>
